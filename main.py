@@ -1,32 +1,34 @@
-from stats import count_words
+import sys
+from stats import count_words, count_characters
 
 
-def count_characters(text):
-    lower = text.lower()
-    abc = {}
-    for i in range(0, len(lower)):
-        if not lower[i].isalpha():
-            continue
-        if lower[i] in abc:
-            abc[lower[i]] += 1
-        else:
-            abc[lower[i]] = 1
-    return abc
+def usage():
+    print("Usage: python3 main.py <path_to_book>")
 
 
 def main():
-    book = "books/frankenstein.txt"
-    print(f"--- Begin report of {book} ---")
-    with open(book) as f:
+    if len(sys.argv) != 2:
+        usage()
+        sys.exit(1)
+
+    print(f"============ BOOKBOT ============")
+    print(f"Analyzing book found at {sys.argv[1]}...")
+
+    with open(sys.argv[1]) as f:
         file_contents = f.read()
+
         wc = count_words(file_contents)
-        print(f"{wc} words found in the document\n")
+        print("----------- Word Count ----------")
+        print(f"Found {wc} total words")
+
         chars_dict = count_characters(file_contents)
         sortd = sorted(chars_dict.items(), key=lambda x: x[1], reverse=True)
-        for tuple in sortd:
-            print(f"The '{tuple[0]}' character was found {tuple[1]} times")
 
-        print("--- End report ---")
+        print("--------- Character Count -------")
+        for tuple in sortd:
+            print(f"{tuple[0]}: {tuple[1]}")
+
+        print("============= END ===============")
 
 
 main()
